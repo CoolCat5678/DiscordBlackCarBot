@@ -1,4 +1,4 @@
 @REM @echo off
 echo Running the app...
 
-poetry run python .\mainApp\DCBOT.py
+poetry run python .\mainApp\main.py
