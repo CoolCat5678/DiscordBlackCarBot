@@ -58,4 +58,6 @@ async def order(interaction: discord.Interaction, meal: Choice[str], size: Choic
     size = size.value
     await interaction.response.send_message(f"{customer} 點了 {size} 號 {meal} 餐")
 
-bot.run("token")
+f = open("token.txt", "r")
+token = f.read()
+bot.run(token)
