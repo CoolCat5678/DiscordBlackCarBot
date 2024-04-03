@@ -1,4 +1,4 @@
 #! /bin/bash
 echo "Running the app..."
 
-poetry run python3 ./mainApp/main.py
+poetry run python3 ./bot/bot.py
