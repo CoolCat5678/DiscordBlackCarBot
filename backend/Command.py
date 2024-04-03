@@ -1,7 +1,9 @@
 import sqlite3
 
 # 連接到 SQLite 數據庫
-conn = sqlite3.connect('CoolcatDB.db')
+database = 'CoolcatDB'
+_dbPath = f'./database/{database}.db'
+conn = sqlite3.connect(_dbPath)
 cursor = conn.cursor()
 
 

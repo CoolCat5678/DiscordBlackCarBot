@@ -19,6 +19,7 @@ CREATE TABLE BlackCarPassenger (
     CarName NVARCHAR(16) NOT NULL,
     JoinNumber INT NOT NULL,
     PlayerName NVARCHAR(16) NOT NULL,
+    DiscordID NVARCHAR(16),
     PRIMARY KEY (CarName, JoinNumber),
     FOREIGN KEY (CarName) REFERENCES BlackCarTable(CarName)
 )
