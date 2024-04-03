@@ -18,7 +18,7 @@ class Connecter:
 
 
     # region function
-    def SearchMonthCar(self, month: int=0):
+    def SearchCarMonth(self, month: int=0):
         """
         This function search car in month.
 
@@ -52,16 +52,24 @@ class Connecter:
             print(row)
                 
                 
-    # def CreateCar(self, CarName: str, PlannedDate: str):
-    #     """
-    #     This function Create a new car.
+    def CreateCar(self, CarName: str, month: int, day: int):
+        """
+        This function Create a new car.
 
-    #     Parameters:
-    #         CarName (str)
-    #         PlannedDate (str) format 'yyyy-mm-dd'
-    #     """
-    #     self.__cursor.execute(f"INSERT INTO BlackCar (CarName, Finished, PlannedDate) VALUES ({CarName}, 'N', {PlannedDate})")
-    #     self.__conn.commit()
+        Parameters:
+            month (int) range between 1 to 12
+            day   (int) range between 1 to 31
+        """
+        PlannedDate = ''
+        currentDate = datetime.now()
+        
+        if 0 < month < 13:
+            PlannedDate = '{}-{:02d}-{:02d}'.format(currentDate.year, month, day)
+        else:
+            PlannedDate = currentDate.strftime('%Y-%m-%d')
+        print(PlannedDate)
+        self.__cursor.execute(f"INSERT INTO BlackCar (CarName, Month, PlannedDate) VALUES ('{CarName}', {month}, '{PlannedDate}')")
+        self.__conn.commit()
 
     # def JoinCar(self):  
     #     """
@@ -79,3 +87,5 @@ class Connecter:
 
 
 x = Connecter('CoolcatDB')
+# x.CreateCar('CoolCar', 5, 15)
+# x.SearchCarMonth(5)
