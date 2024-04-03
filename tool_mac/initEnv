@@ -1,0 +1,9 @@
+#! /bin/bash
+refdir=$0
+refdir=${refdir%/*}
+
+touch $refdir/../token.txt
+
+cd $refdir/../
+poetry run python -c "exit()"
+poetry install
