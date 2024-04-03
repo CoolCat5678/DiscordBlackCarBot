@@ -1,11 +1,17 @@
 import sqlite3
 from datetime import datetime
 
-class connecter:
+class Connecter:
     __conn=any
     __cursor=any
     
-    def __init__(self, database: str):
+    def __init__(self, database: str="CoolcatDB"):
+        """
+        Constructor.
+
+        Parameters:
+            database (str) deafault:CoolcatDB
+        """
         __dbPath = f'./database/{database}.db'
         self.__conn = sqlite3.connect(__dbPath)
         self.__cursor = self.__conn.cursor() 
@@ -18,9 +24,6 @@ class connecter:
 
         Parameters:
             month (int) range between 1 to 12
-
-        Returns:
-            void
         """
         formattedDate = ''
         currentDate = datetime.now()
