@@ -18,7 +18,7 @@ class Connecter:
 
 
     # region function
-    def SearchMonthCar(self, month: int=None):
+    def SearchMonthCar(self, month: int=0):
         """
         This function search car in month.
 
@@ -28,7 +28,7 @@ class Connecter:
         formattedDate = ''
         currentDate = datetime.now()
         
-        if month & 0 < month < 13:
+        if month > 0 and month < 13:
             formattedDate = '{}-{:02d}'.format(currentDate.year, month)
         else:
             formattedDate = currentDate.strftime('%Y-%m')
@@ -78,5 +78,4 @@ class Connecter:
     # endregion
 
 
-x = connecter('CoolcatDB')
-
+x = Connecter('CoolcatDB')
