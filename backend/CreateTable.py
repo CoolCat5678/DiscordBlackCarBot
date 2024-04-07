@@ -11,6 +11,7 @@ CREATE TABLE BlackCar (
     Month INT NOT NULL,
     Finished CHAR(1) DEFAULT 'N' NOT NULL,
     PlannedDate DATETIME,
+    FightTime INT,
     
     PRIMARY KEY (CarName, Month)
 )

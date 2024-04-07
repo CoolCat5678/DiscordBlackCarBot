@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime
 
+
 class Connecter:
     __conn=any
     __cursor=any
@@ -15,15 +16,21 @@ class Connecter:
         __dbPath = f'./database/{database}.db'
         self.__conn = sqlite3.connect(__dbPath)
         self.__cursor = self.__conn.cursor() 
+        
+
 
 
     # region function
-    def SearchCarMonth(self, month: int=0):
+    # 搜尋月份
+    def SearchCarMonth(self, month: int=0) -> list:
         """
         This function search car in month.
 
         Parameters:
             month (int) range between 1 to 12
+
+        return:
+            list
         """
         formattedDate = ''
         currentDate = datetime.now()
@@ -33,25 +40,23 @@ class Connecter:
         else:
             formattedDate = currentDate.strftime('%Y-%m')
         
-        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName WHERE M.PlannedDate LIKE '{formattedDate}%'")    
+        self.__cursor.execute(f"SELECT * FROM BlackCar M WHERE M.PlannedDate LIKE '{formattedDate}%'")    
         rows = self.__cursor.fetchall()
-        for row in rows:
-            print(row)
+        return rows
             
-            
+    # 搜尋車名
     def SearchCarName(self, carName: str):
         """
-        This function search car with Name.
+        This function search car with name.
 
         Parameters:
             carName (str)
         """
         self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName WHERE M.CarName='{carName}'")    
         rows = self.__cursor.fetchall()
-        for row in rows:
-            print(row)
+        return rows
                 
-                
+    # 新建車
     def CreateCar(self, CarName: str, month: int, day: int):
         """
         This function Create a new car.
@@ -86,6 +91,14 @@ class Connecter:
     # endregion
 
 
+# ----
+
+def coolcat():
+    return 'coolcat'
+
+
+
 x = Connecter('CoolcatDB')
 # x.CreateCar('CoolCar', 5, 15)
 # x.SearchCarMonth(5)
+print(x.CreateCar())
