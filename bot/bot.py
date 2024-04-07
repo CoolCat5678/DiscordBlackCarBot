@@ -1,6 +1,5 @@
 import asyncio
 import discord
-from common import utils
 from pathlib import Path
 from discord.ext import commands
 
@@ -15,20 +14,18 @@ async def on_ready():
 
 @bot.command()
 async def load(ctx, extension):
-    await bot.load_extension(f"cogs.{extension}")
-    await ctx.send(f"載入 {extension} 完成")
+    res = await call_awaitable(lambda: bot.load_extension(f"cogs.{extension}")) == None;
+    await ctx.send(f"載入 {extension} {'完成' if res else '失敗'}")
 
 @bot.command()
 async def unload(ctx, extension):
-    await bot.unload_extension(f"cogs.{extension}")
-    await ctx.send(f"卸載 {extension} 完成")
+    res = await call_awaitable(lambda: bot.unload_extension(f"cogs.{extension}")) == None;
+    await ctx.send(f"卸載 {extension} {'完成' if res else '失敗'}")
 
 @bot.command()
 async def reload(ctx, extension):
-    if await call_awaitable(lambda: bot.reload_extension(f"cogs.{extension}")) == None:
-        await ctx.send(f"重新載入 {extension} 完成")
-    else:
-        await ctx.send(f"重新載入 {extension} 失敗")
+    res = await call_awaitable(lambda: bot.reload_extension(f"cogs.{extension}")) == None;
+    await ctx.send(f"重新載入 {extension} {'完成' if res else '失敗'}")
 
 async def load_extentions():
     for file in Path(__file__).parent.joinpath("cogs").rglob("*.py"):
@@ -38,7 +35,8 @@ async def call_awaitable(func: callable):
     try:
         await asyncio.wait_for(func(), timeout=1)
         return None
-    except:
+    except Exception as e:
+        print(e);
         return "Error..."
 
 async def main():
