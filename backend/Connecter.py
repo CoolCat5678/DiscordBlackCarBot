@@ -121,14 +121,3 @@ def FormattedDate(month: int, day: int, year: int=None) -> str:
 
 
 # test -----------------------------------------------------------------
-
-x = Connecter('CoolcatDB')
-x.JoinCar("A", 4, "mwcat", "cat7272727")
-# y = x._Test("SELECT * FROM BlackCar")
-# for i in y:
-#     print(i)
-    
-# y = x._Test("SELECT * FROM BlackCarPassenger")
-# for i in y:
-#     print(i)
-    
