@@ -42,7 +42,7 @@ class Connecter:
         rows = self.__cursor.fetchall()
         return rows
 
-    def CreateCar(self, CarName: str, month: int, day: int, playerName: str,discordID = str, fightTime: int=60) -> bool:
+    def CreateCar(self, CarName: str, month: int, day: int, playerName: str, discordID = str, fightTime: int=60) -> bool:
         """
         This function Create a new car.
 
@@ -53,14 +53,14 @@ class Connecter:
             date = FormattedDate(month, day)
             self.__cursor.execute(f"INSERT INTO BlackCar (CarName, Month, PlannedDate, FightTime, DiscordID) VALUES ('{CarName}', {month}, '{date}', {fightTime}, {discordID})")
             self.__conn.commit()
-            self.JoinCar(CarName, playerName, month, discordID)
+            self.JoinCar(CarName, month, playerName, discordID)
             return True
         
         except Exception as e:
             print(e)
             return False
 
-    def JoinCar(self, CarName: str, month: int,playerName: str , discordID = str):  
+    def JoinCar(self, CarName: str, month: int, playerName: str , discordID = str):  
         """
         This function calculates the area of a rectangle.
 
@@ -121,3 +121,13 @@ def FormattedDate(month: int, day: int, year: int=None) -> str:
 
 
 # test -----------------------------------------------------------------
+
+# x = Connecter()
+# x.CreateCar("懷特車", 4, 26, "Whiter5678", "12345678973748763", 59)
+# x.CreateCar("怪特車", 4, 22, "Coolcat5678", "12342338972748763", 51)
+# x.CreateCar("A車", 4, 21, "Pizza81324", "12345671172748763", 52)
+# x.CreateCar("B車", 4, 20, "長恨晚歌", "1234562748763", 60)
+# x.CreateCar("C車", 4, 27, "NSPEED", "123454748763", 19)
+# x.JoinCar("懷特車", 4, "苦痛狗", "1miss123nnnggggrrrr")
+
+# print(x._Test('SELECT * FROM BlackCar'))
