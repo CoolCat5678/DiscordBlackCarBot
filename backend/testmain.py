@@ -47,8 +47,8 @@ class ViewClass(discord.ui.View):
   async def show_detail(self, interaction: discord.Interaction, button: discord.ui.Button):
       try:
         description = ''
-        for i in self.conne.SearchCarName(self.embeds[self.current_page].title, 4):
-          description += str(i) + '\r'
+        for i in self.conne.search_car_name(self.embeds[self.current_page].title, 4):
+          description += f"順序:{i['JoinNumber']}  遊戲ID:{i['PlayerName']}\r"
           
         list = discord.Embed(
           title=self.embeds[self.current_page].title,
@@ -75,7 +75,7 @@ class Main(commands.Cog):
   @app_commands.describe(month = "輸入月份")
   async def search_month(self, interaction: discord.Interaction ,month: int):
     try:
-      list = self.x.SearchCarMonth(month)
+      list = self.x.search_car_month(month)
       embeds = creat_embeds(list)
       view = ViewClass(embeds=embeds, timeout=30, conne=self.x)
       await interaction.response.send_message(view=view, embed=embeds[0])
@@ -85,7 +85,7 @@ class Main(commands.Cog):
   @commands.hybrid_command(name = "查詢車名", description = "查詢指定車名的車")
   @app_commands.describe(carname = "輸入車名", month = "輸入月份")
   async def search_car_name(self, ctx, carname: str, month: int):
-    await ctx.send(self.x.SearchCarName(carname, month))
+    await ctx.send(self.x.search_car_name(carname, month))
 
   @commands.hybrid_command(name = "sqlcmd", description = "fortest")
   @app_commands.describe(sqltext = "sqlsql")

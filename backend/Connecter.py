@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime
 
 # 更改cursor return to dict
-def DictFactory(cursor, row):
+def dict_factory(cursor, row):
     d = {}
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
@@ -17,10 +17,10 @@ class Connecter:
         """
         __dbPath = f'./database/{database}.db'
         self.__conn = sqlite3.connect(__dbPath)
-        self.__conn.row_factory = DictFactory
+        self.__conn.row_factory = dict_factory
         self.__cursor = self.__conn.cursor() 
         
-    def SearchCarMonth(self, month: int) -> list:
+    def search_car_month(self, month: int) -> list:
         """
         This function search car in month.
 
@@ -31,18 +31,18 @@ class Connecter:
         rows = self.__cursor.fetchall()
         return rows
             
-    def SearchCarName(self, carName: str, month: int) -> list:
+    def search_car_name(self, car_name: str, month: int) -> list:
         """
         This function search car with name.
         
         return:
             list
         """
-        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE M.CarName='{carName}' AND M.Month={month}")
+        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE M.CarName='{car_name}' AND M.Month={month}")
         rows = self.__cursor.fetchall()
         return rows
 
-    def CreateCar(self, CarName: str, month: int, day: int, playerName: str, discordID = str, fightTime: int=60) -> bool:
+    def create_car(self, car_name: str, month: int, day: int, player_name: str, discord_id = str, fight_time: int=60) -> bool:
         """
         This function Create a new car.
 
@@ -50,17 +50,17 @@ class Connecter:
             bool: success=true
         """
         try:
-            date = FormattedDate(month, day)
-            self.__cursor.execute(f"INSERT INTO BlackCar (CarName, Month, PlannedDate, FightTime, DiscordID) VALUES ('{CarName}', {month}, '{date}', {fightTime}, {discordID})")
+            date = formatted_date(month, day)
+            self.__cursor.execute(f"INSERT INTO BlackCar (CarName, Month, PlannedDate, FightTime, DiscordID) VALUES ('{car_name}', {month}, '{date}', {fight_time}, {discord_id})")
             self.__conn.commit()
-            self.JoinCar(CarName, month, playerName, discordID)
+            self.join_car(car_name, month, player_name, discord_id)
             return True
         
         except Exception as e:
             print(e)
             return False
 
-    def JoinCar(self, CarName: str, month: int, playerName: str , discordID = str):  
+    def join_car(self, car_name: str, month: int, player_name: str , discord_id = str):  
         """
         This function calculates the area of a rectangle.
 
@@ -73,27 +73,27 @@ class Connecter:
         """
         try:
             # 檢查是否有車
-            if(self.__cursor.execute(f"SELECT 1 FROM BlackCar WHERE CarName='{CarName}' AND Month={month} AND Finished='N'").fetchone()):
+            if(self.__cursor.execute(f"SELECT 1 FROM BlackCar WHERE CarName='{car_name}' AND Month={month} AND Finished='N'").fetchone()):
                 pass
             else:
                 print("Car Not Found")
                 return False
             
             # 檢查是否加入過
-            if(self.__cursor.execute(f"SELECT 1 FROM BlackCarPassenger WHERE CarName='{CarName}' AND Month={month} AND PlayerName='{playerName}'").fetchone() == None):
+            if(self.__cursor.execute(f"SELECT 1 FROM BlackCarPassenger WHERE CarName='{car_name}' AND Month={month} AND PlayerName='{player_name}'").fetchone() == None):
                 pass
             else:
                 print("You Have Joined")
                 return False
             
             # 加入順序+1
-            joinNum = self.__cursor.execute(f"SELECT MAX(JoinNumber) FROM BlackCarPassenger WHERE CarName='{CarName}' AND Month={month}").fetchone()["MAX(JoinNumber)"]
-            if joinNum == None:
-                joinNum = 1
+            join_num = self.__cursor.execute(f"SELECT MAX(JoinNumber) FROM BlackCarPassenger WHERE CarName='{car_name}' AND Month={month}").fetchone()["MAX(JoinNumber)"]
+            if join_num == None:
+                join_num = 1
             else:
-                joinNum += 1
+                join_num += 1
             
-            self.__cursor.execute(f"INSERT INTO BlackCarPassenger (CarName, JoinNumber, PlayerName, Month, DiscordID) VALUES ('{CarName}', {joinNum}, '{playerName}', {month}, '{discordID}')")
+            self.__cursor.execute(f"INSERT INTO BlackCarPassenger (CarName, JoinNumber, PlayerName, Month, DiscordID) VALUES ('{car_name}', {join_num}, '{player_name}', {month}, '{discord_id}')")
             self.__conn.commit()
             return True
         
@@ -108,16 +108,16 @@ class Connecter:
 
 
 
-def FormattedDate(month: int, day: int, year: int=None) -> str:
-    formattedDate = ''
-    currentDate = datetime.now()
+def formatted_date(month: int, day: int, year: int=None) -> str:
+    formatted_date = ''
+    current_date = datetime.now()
     
     if year == None:
-        formattedDate = '{}-{:02d}-{:02d}'.format(currentDate.year, month, day)
+        formatted_date = '{}-{:02d}-{:02d}'.format(current_date.year, month, day)
     if year != None:
         # TODO
-        formattedDate = '{}-{:02d}-{:02d}'.format(currentDate.year, month, day)
-    return formattedDate
+        formatted_date = '{}-{:02d}-{:02d}'.format(current_date.year, month, day)
+    return formatted_date
 
 
 # test -----------------------------------------------------------------
