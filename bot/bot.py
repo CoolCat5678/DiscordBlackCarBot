@@ -13,17 +13,17 @@ async def on_ready():
     print(f"載入 {len(slash)} 個斜線指令")
 
 @bot.command()
-async def load(ctx, extension):
+async def load(ctx: commands.Context, extension):
     res = await call_awaitable(lambda: bot.load_extension(f"cogs.{extension}")) == None;
     await ctx.send(f"載入 {extension} {'完成' if res else '失敗'}")
 
 @bot.command()
-async def unload(ctx, extension):
+async def unload(ctx: commands.Context, extension):
     res = await call_awaitable(lambda: bot.unload_extension(f"cogs.{extension}")) == None;
     await ctx.send(f"卸載 {extension} {'完成' if res else '失敗'}")
 
-@bot.command()
-async def reload(ctx, extension):
+@bot.hybrid_command(name="reload", description="重新載入指定擴充功能")
+async def reload(ctx: commands.Context, extension: str = 'gui'):
     res = await call_awaitable(lambda: bot.reload_extension(f"cogs.{extension}")) == None;
     await ctx.send(f"重新載入 {extension} {'完成' if res else '失敗'}")
 

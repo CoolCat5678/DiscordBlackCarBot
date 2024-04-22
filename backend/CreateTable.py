@@ -1,7 +1,8 @@
 import sqlite3
+from pathlib import Path
 
 # 創建或連接到 SQLite 數據庫
-conn = sqlite3.connect('./database/CoolcatDB.db')
+conn = sqlite3.connect(Path(__file__).parents[1].joinpath('database', 'CoolcatDB.db'))
 cursor = conn.cursor()
 
 # 創建 BlackCarTable 表格

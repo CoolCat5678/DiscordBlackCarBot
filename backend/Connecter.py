@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime
+from pathlib import Path
 
 # 更改cursor return to dict
 def dict_factory(cursor, row):
@@ -15,7 +16,7 @@ class Connecter:
         """
         Constructor
         """
-        __dbPath = f'./database/{database}.db'
+        __dbPath = Path(__file__).parents[1].joinpath('database', f'{database}.db')
         self.__conn = sqlite3.connect(__dbPath)
         self.__conn.row_factory = dict_factory
         self.__cursor = self.__conn.cursor() 
