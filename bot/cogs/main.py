@@ -1,8 +1,6 @@
 from discord.ext import commands
-from pathlib import Path
-import sys
-sys.path.insert(0, Path(__file__).parents[1].as_posix())
 from model.bot_model import BotModel
+from views.bot_views import Bot_Layouts
 
 unimplement = "尚未實裝"
 

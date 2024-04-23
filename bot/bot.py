@@ -1,10 +1,15 @@
 import asyncio
 import discord
 from pathlib import Path
+import sys
 from discord.ext import commands
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix = "$", intents = intents)
+
+def init_path():
+    sys.path.insert(0, Path(__file__).parents[1].as_posix())
+
 
 @bot.event
 async def on_ready():
@@ -46,4 +51,5 @@ async def main():
         await bot.start(token)
 
 if __name__ == "__main__":
+    init_path()
     asyncio.run(main())

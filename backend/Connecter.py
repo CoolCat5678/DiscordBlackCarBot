@@ -1,7 +1,6 @@
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-import car_passenger
 
 # 更改cursor return to dict
 def dict_factory(cursor, row):
@@ -11,6 +10,14 @@ def dict_factory(cursor, row):
     return d
 
 class Connecter:
+    __instance = None
+
+    @staticmethod
+    def get_instance():
+        if Connecter.__instance == None:
+            Connecter.__instance = Connecter()
+        return Connecter.__instance
+
     def __init__(self, database: str="CoolcatDB"):
         """
         Constructor
@@ -20,13 +27,13 @@ class Connecter:
         self.__conn.row_factory = dict_factory
         self.__cursor = self.__conn.cursor()
         
-        self.cars = {}
-        cars = self.__cursor.execute('SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month').fetchall()
-        for car in cars:
-            if car['CarName'] not in self.cars:
-                self.cars[car['CarName']] = car_passenger.Car(self.__conn, car)
-            else:
-                self.cars[car['CarName']].join_passenger(car)
+        # self.cars = {}
+        # cars = self.__cursor.execute('SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month').fetchall()
+        # for car in cars:
+        #     if car['CarName'] not in self.cars:
+        #         self.cars[car['CarName']] = Car(self.__conn, car)
+        #     else:
+        #         self.cars[car['CarName']].join_passenger(car)
         
     def search_car_month(self, month: int) -> list:
         """
@@ -115,6 +122,7 @@ class Connecter:
         return rows
 
 
+conn = Connecter.get_instance()
 
 def formatted_date(month: int, day: int, year: int=None) -> str:
     formatted_date = ''
