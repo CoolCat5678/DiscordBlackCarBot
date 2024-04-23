@@ -133,7 +133,8 @@ def formatted_date(month: int, day: int, year: int=None) -> str:
 
 def main():
     x = Connecter()
-    print(x.cars['懷特車'].PlannedDate)
+    print(x.cars['懷特車'])
+    print(x.cars['懷特車'].get_all_passenger())
 # x.CreateCar("懷特車", 4, 26, "Whiter5678", "12345678973748763", 59)
 # x.CreateCar("怪特車", 4, 22, "Coolcat5678", "12342338972748763", 51)
 # x.CreateCar("A車", 4, 21, "Pizza81324", "12345671172748763", 52)

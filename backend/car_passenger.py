@@ -12,9 +12,19 @@ class Car:
     
     def join_passenger(self, data):
         self.passenger[data['JoinNumber']] = Passenger(data)
+        
+    def get_all_passenger(self):
+        for k, v in self.passenger.items():
+            print(k, v)
     
+    def __repr__(self) -> str:
+        return(f'車名:{self.CarName}, 人數{len(self.passenger)}')
+            
 class Passenger:
     def __init__(self, data) -> None:
         self.JoinNumber = data['JoinNumber']
-        self.JoinNumber = data['PlayerName']
-        self.JoinNumber = data['DiscordID']
+        self.PlayerName = data['PlayerName']
+        self.DiscordID = data['DiscordID']
+        
+    def __repr__(self) -> str:
+        return(f'JoinNumber:{self.JoinNumber}, PlayerName:{self.PlayerName}, DiscordID:{self.DiscordID}')
