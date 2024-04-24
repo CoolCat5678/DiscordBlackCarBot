@@ -1,5 +1,5 @@
 from .car_model import Car
-from backend.Connecter import conn
+from backend.connecter import conn
 
 class BotModel:
   __instance = None
