@@ -42,7 +42,7 @@ class Connecter:
         return:
             list
         """
-        self.__cursor.execute(f"SELECT * FROM BlackCar M WHERE M.Month={month}")    
+        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE M.Month={month}")    
         rows = self.__cursor.fetchall()
         return rows
             
@@ -141,8 +141,6 @@ def formatted_date(month: int, day: int, year: int=None) -> str:
 
 def main():
     x = Connecter()
-    print(x.cars['懷特車'])
-    print(x.cars['懷特車'].get_all_passenger())
 # x.CreateCar("懷特車", 4, 26, "Whiter5678", "12345678973748763", 59)
 # x.CreateCar("怪特車", 4, 22, "Coolcat5678", "12342338972748763", 51)
 # x.CreateCar("A車", 4, 21, "Pizza81324", "12345671172748763", 52)
