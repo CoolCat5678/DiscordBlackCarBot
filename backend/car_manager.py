@@ -25,7 +25,7 @@ class CarManager:
 def main():
     cm = CarManager()
     cm.search_car(4)
-    print(cm.car_list['懷特車'])
+    print(cm.car_list)
 
     
 if __name__=='__main__':

@@ -28,7 +28,7 @@ CREATE TABLE BlackCarPassenger (
     PlayerName NVARCHAR(16) NOT NULL,
     DiscordID NVARCHAR(18),
     
-    PRIMARY KEY (CarName, Month, JoinNumber),
+    PRIMARY KEY (CarName, Month),
     FOREIGN KEY (CarName, Month) REFERENCES BlackCarTable(CarName, Month)
 )
 ''')
