@@ -1,3 +1,20 @@
+### TABLE BlackCar
+# CarName NVARCHAR(16) NOT NULL,            -- 車名
+# Year INT NOT NULL,                        -- 日期年
+# Month INT NOT NULL,                       -- 日期月
+# Finished CHAR(1) DEFAULT 'N' NOT NULL,    -- 結束('Y'/'N')
+# PlannedDate DATETIME,                     -- 發車日期
+# DiscordID NVARCHAR(18),                   -- 車長DC
+# FightTime INT,                            -- 預計幾分內
+
+###
+# CarName NVARCHAR(16) NOT NULL,            -- 車名
+# Year INT NOT NULL,                        -- 日期年
+# Month INT NOT NULL,                       -- 日期月
+# QueueNumber INT NOT NULL,                  -- 加入順序
+# PlayerName NVARCHAR(16) NOT NULL,         -- 玩家ID
+# DiscordID NVARCHAR(18),                   -- 玩家DC
+
 import sqlite3
 from pathlib import Path
 
@@ -5,60 +22,40 @@ from pathlib import Path
 conn = sqlite3.connect(Path(__file__).parents[1].joinpath('database', 'CoolcatDB.db'))
 cursor = conn.cursor()
 
-# 創建 BlackCarTable 表格
-cursor.execute('''
-CREATE TABLE BlackCar (
-    CarName NVARCHAR(16) NOT NULL,
-    Month INT NOT NULL,
-    Finished CHAR(1) DEFAULT 'N' NOT NULL,
-    PlannedDate DATETIME,
-    DiscordID NVARCHAR(18),
-    FightTime INT,
+def main():
+    # 創建 BlackCarTable 表格
+    cursor.execute('''
+    CREATE TABLE BlackCar (
+        CarName NVARCHAR(16) NOT NULL,
+        Year INT NOT NULL,
+        Month INT NOT NULL,
+        Finished CHAR(1) DEFAULT 'N' NOT NULL,
+        PlannedDate DATETIME,
+        DiscordID NVARCHAR(18),
+        FightTime INT,
+        
+        PRIMARY KEY (CarName, Year, Month)
+    )
+    ''')
+
+    # 創建 BlackCarPassenger 表格
+    cursor.execute('''
+    CREATE TABLE BlackCarPassenger (
+        CarName NVARCHAR(16) NOT NULL,
+        Year INT NOT NULL,
+        Month INT NOT NULL,
+        QueueNumber INT NOT NULL,
+        PlayerName NVARCHAR(16) NOT NULL,
+        DiscordID NVARCHAR(18),
+        
+        PRIMARY KEY (CarName, Year, Month, PlayerName),
+        FOREIGN KEY (CarName, Year, Month) REFERENCES BlackCarTable(CarName, Year, Month)
+    )
+    ''')
+
+    # 提交更改並關閉連接
+    conn.commit()
+    conn.close()
     
-    PRIMARY KEY (CarName, Month)
-)
-''')
-
-# 創建 BlackCarPassenger 表格
-cursor.execute('''
-CREATE TABLE BlackCarPassenger (
-    CarName NVARCHAR(16) NOT NULL,
-    Month INT NOT NULL,
-    JoinNumber INT NOT NULL,
-    PlayerName NVARCHAR(16) NOT NULL,
-    DiscordID NVARCHAR(18),
-    
-    PRIMARY KEY (CarName, Month),
-    FOREIGN KEY (CarName, Month) REFERENCES BlackCarTable(CarName, Month)
-)
-''')
-
-# # region test data
-# # 插入 BlackCarTable 表格的數據
-# cursor.execute('''
-# INSERT INTO BlackCar (CarName, Month, PlannedDate, FightTime, DiscordID) VALUES
-# ('Car1', 1, '2024-04-01', 15, '123456'),
-# ('Car3', 2, '2024-04-05', 20, '123456'),
-# ('Car3', 3, '2024-04-10', 16, '123456')
-# ''')
-
-# # 插入 BlackCarPassenger 表格的數據
-# cursor.execute('''
-# INSERT INTO BlackCarPassenger (CarName, Month, JoinNumber, PlayerName, DiscordID) VALUES
-# ('Car1', 1, 2, 'Player2', '234567'),
-# ('Car1', 1, 3, 'Player3', '345678'),
-
-# ('Car3', 2, 2, 'Player5', '567890'),
-# ('Car3', 2, 3, 'Player6', '678901'),
-# ('Car3', 2, 4, 'Player7', '789012'),
-
-# ('Car3', 3, 2, 'Player9', '901234'),
-# ('Car3', 3, 3, 'Player10', '012345'),
-# ('Car3', 3, 4, 'Player11', '123456'),
-# ('Car3', 3, 5, 'Player12', '234567')
-# ''')
-# # endregion
-
-# 提交更改並關閉連接
-conn.commit()
-conn.close()
+if __name__=='__main__':
+    main()

@@ -14,11 +14,11 @@ class BotModel:
     return BotModel.__instance
   
   def search_car_month(self, month: int) -> list[Car]:
-    car_list = conn.search_car_month(month)
+    car_list = conn.search_car(Month=month)
     return list(map(lambda car: Car(car), car_list))
 
   def search_car_name(self, car_name: str, month: int) -> list:
-    return conn.search_car_name(car_name, month)
+    return conn.search(CarName=car_name, Month=month)
   
   def create_car(self, car_name: str, month: int, day: int, player_name: str, discord_id = str, fight_time: int=60) -> bool:
     return conn.create_car(car_name, month, day, player_name, discord_id, fight_time)
