@@ -2,7 +2,7 @@ from discord.ext import commands
 from model.bot_model import BotModel
 from views.bot_views import Bot_Layouts
 
-unimplement = "尚未實裝"
+UNIMPLEMENT = "尚未實裝"
 
 class Main(commands.Cog):
   def __init__(self, bot):
@@ -11,7 +11,8 @@ class Main(commands.Cog):
   
   @commands.hybrid_command(name = "查詢月份", description = "查詢指定月份")
   async def search_month(self, ctx: commands.Context, month: int):
-    await ctx.send(self.bc.search_car_month(month = month))
+    # await ctx.send(self.bc.search_car_month(month = month))
+    await Bot_Layouts.DETAIL_LIST.value.show_view(ctx)
   
   @commands.hybrid_command(name = "查詢車長", description = "查詢指定車長的車")
   async def search_car(self, ctx: commands.Context, car_name: str, month: int):
@@ -23,7 +24,7 @@ class Main(commands.Cog):
   
   @commands.hybrid_command(name = "翻車", description = "刪除一台車")
   async def delete_car(self, ctx):
-    await ctx.send(unimplement)
+    await ctx.send(UNIMPLEMENT)
   
   @commands.hybrid_command(name = "加入", description = "上車")
   async def passenger_join(self, ctx: commands.Context, car_name: str, month: int, player_name: str, discord_id: str):

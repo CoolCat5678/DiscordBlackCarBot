@@ -10,7 +10,6 @@ bot = commands.Bot(command_prefix = "$", intents = intents)
 def init_path():
     sys.path.insert(0, Path(__file__).parents[1].as_posix())
 
-
 @bot.event
 async def on_ready():
     slash = await bot.tree.sync()

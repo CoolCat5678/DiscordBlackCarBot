@@ -6,14 +6,8 @@ from datetime import datetime
 from abc import ABCMeta, abstractmethod
 from model.bot_model import BotModel
 
-## for development fast reload, should be enhanced in the future
 from importlib import reload
-from pathlib import Path
-import sys
-sys.path.insert(0, Path(__file__).parent.as_posix())
-import bot_modal as modals
-##
-
+import views.bot_modal as modals
 import common as cm
 
 now: datetime = datetime.now()
@@ -39,6 +33,12 @@ class Bot_views_base(View, metaclass=ABCMeta):
 
   def sync_time(self, embed: Embed):
     embed.set_footer(text=f"最後更新時間 {now.strftime('%m-%d %H:%M')}", icon_url=cm.thumbnail_url)
+
+  async def rerender(self, interaction: Interaction):
+    try:
+      await interaction.response.edit_message(embed=self.embed, view=self)
+    except Exception as e:
+      print(e)
   
 class Overview_view(Bot_views_base):
   __instance = None
@@ -61,6 +61,15 @@ class Overview_view(Bot_views_base):
     embed.add_field(name="下次發車日期", value="`48763`", inline=False)
     super().add_new_line()
 
+  @button(label="自己開車", style=ButtonStyle.primary, custom_id="create_car")
+  async def create_car(self, interaction: Interaction, _):
+    try:
+      modal = modals.CreateCarModal()
+      await modal.show_modal(interaction)
+    except Exception as e:
+      print(e)
+      pass
+
   @button(label="時刻表", style=ButtonStyle.grey, custom_id="search_car")
   async def delete_car(self, interaction: Interaction, _):
     await switch_view(Bot_Layouts.DETAIL_LIST, interaction)
@@ -73,29 +82,46 @@ class Detail_list_view(Bot_views_base):
       Detail_list_view.__instance = Detail_list_view()
     return Detail_list_view.__instance
 
+  car_list = None
+  bot_model = BotModel()
+
   def __init__(self):
-    
     super().__init__(title = "發車時刻表", color= 0xa5a5ff)
     pass
 
   def init_layout(self, embed: Embed):
+    current_month = datetime.now().month
+    self.car_list = self.bot_model.search_car_month(current_month)
     self.render_detail_list(embed)
   
   def render_detail_list(self, embed: Embed):
-    bot_model = BotModel()
-    current_month = datetime.now().month
-    car_list = bot_model.search_car_month(current_month)
+    car_list = next(self.car_list)
+    if (car_list == None):
+      return False
+
+    embed.clear_fields()
     for car in car_list:
-      field_value = [f"車長: `{car.CarName}`", f"目前人數: `{len(car.passenger)}`", "\n"
-                    ,f"預計: `{car.FightTime}`分鐘"]
-      embed.add_field(name=f"{car_list.index(car) + 1} 車 / `{car.PlannedDate}`", value="  ".join(field_value), inline=False)
-    pass
+      ## wait for manager ready
+      # field_value = [f"車長: `{car.CarName}`", f"目前人數: `{len(car)}`", "\n"
+      #               ,f"預計: `{car.FightTime}`分鐘"]
+      # embed.add_field(name=f"{car_list.index(car) + 1} 車 / `{car.PlannedDate}`", value=field_value, inline=False)
+      embed.add_field(name=car, value=car, inline=False)
+    return True
 
   @button(label="登記上車", style=ButtonStyle.primary, custom_id="search_car")
   async def join_car(self, interaction: Interaction, _):
     try:
       modal = modals.JoinCarModal()
       await modal.show_modal(interaction)
+    except Exception as e:
+      print(e)
+      pass
+
+  @button(label="下一頁", style=ButtonStyle.grey, custom_id="next_page")
+  async def next_page(self, interaction: Interaction, button: button):
+    try:
+      button.disabled = not self.render_detail_list(self.embed)
+      await self.rerender(interaction)
     except Exception as e:
       print(e)
       pass

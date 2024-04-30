@@ -2,7 +2,6 @@ from typing import Dict
 
 class Passenger:
     def __init__(self, data) -> None:
-        print(data)
         self.QueueNumber = data.get('QueueNumber', None)
         self.PlayerName = data['PlayerName']
         self.DiscordID = data['DiscordID']

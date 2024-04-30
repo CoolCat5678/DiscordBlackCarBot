@@ -1,7 +1,5 @@
-import sys
-sys.path.append('./')
 from bot.model.car_model import CarList, Car, Passenger
-from connecter import conn
+from .Connecter import conn
 
 class CarManager:
     def __init__(self) -> None:
