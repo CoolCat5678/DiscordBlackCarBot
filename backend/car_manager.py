@@ -1,32 +1,64 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 from bot.model.car_model import CarList, Car, Passenger
-from .Connecter import conn
+from Connecter import conn
 
 class CarManager:
-    def __init__(self) -> None:
-        self.car_list = CarList()
+    def __init__(self) -> None: 
+        pass
     
     def delete_car(self, car: Car):
         pass
     
     def update_car(self, car: Car):
-        db_data = conn.search_car(CarName=car.CarName, Month=car.Month)
+        conn.insert_car(
+                CarName=car.CarName,
+                Year=car.Year,
+                Month=car.Month,
+                Finished=car.Finished,
+                PlannedDate=car.PlannedDate,
+                DiscordID=car.DiscordID,
+                FightTime=car.FightTime
+            )
         
-        db_car = Car(db_data[0])
-        for db_passenger in db_data:
-            db_car.join_passenger(Passenger(db_passenger))
+        for passenger in car:
+            conn.insert_passenger(
+                CarName=car.CarName,
+                Year=car.Year,
+                Month=car.Month,
+                QueueNumber=passenger.QueueNumber,
+                PlayerName=passenger.PlayerName,
+                DiscordID=passenger.DiscordID
+            )
             
-        attr1 = vars(db_car)
-        for attr in attr1:
-            print(getattr(db_car, attr) == getattr(car, attr))
-            
-    def search_car(self, month) -> CarList:
-        data = conn.search_car(Month=month)
-        self.car_list._create_list(data)
+    def get_car_list(self, CarName=None, Year=None, Month=None, Finished=None, PlannedDate=None, DiscordID=None, FightTime=None) -> CarList:
+        paras = {}
+        if CarName is not None:
+            paras['CarName'] = CarName
+        if Year is not None:
+            paras['Year'] = Year
+        if Month is not None:
+            paras['Month'] = Month
+        if Finished is not None:
+            paras['Finished'] = Finished
+        if PlannedDate is not None:
+            paras['PlannedDate'] = PlannedDate
+        if DiscordID is not None:
+            paras['DiscordID'] = DiscordID
+        if FightTime is not None:
+            paras['FightTime'] = FightTime
+        data = conn.search_car(**paras)
+        
+        car_list = CarList()
+        car_list._create_list(data)
+        
+        return car_list
     
 def main():
     cm = CarManager()
-    cm.search_car(4)
-    print(cm.car_list['ACar'])
+    m4 = cm.get_car_list()['ACar']
+    cm.update_car(m4)
     
 if __name__=='__main__':
     main()

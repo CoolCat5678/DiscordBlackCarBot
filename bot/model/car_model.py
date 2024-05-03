@@ -15,7 +15,7 @@ class Passenger:
 
 class Car:
     def __init__(self, data) -> None:
-        self.__passengers: Dict[int, Passenger] = {}
+        # attrs
         self.CarName: str = data['CarName']
         self.Year: int = data['Year']
         self.Month: int = data['Month']
@@ -23,8 +23,12 @@ class Car:
         self.PlannedDate: str = data['PlannedDate']
         self.DiscordID: str = data['DiscordID']
         self.FightTime: int = data['FightTime']
+        # passengers
+        self.__passengers: Dict[int, Passenger] = {}
     
     def join_passenger(self, passenger: Passenger):
+        if passenger.QueueNumber == None:
+            passenger.QueueNumber = max(self.__passengers.keys()) + 1
         self.__passengers[passenger.QueueNumber] = passenger
     
     def __repr__(self) -> str:
