@@ -1,10 +1,15 @@
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 from bot.model.car_model import CarList, Car, Passenger
-from Connecter import conn
+from backend.Connecter import conn
 
 class CarManager:
+    __instance = None
+    
+    @staticmethod
+    def get_instance():
+        if CarManager.__instance == None:
+            CarManager.__instance = CarManager()
+        return CarManager.__instance
+
     def __init__(self) -> None: 
         pass
     
