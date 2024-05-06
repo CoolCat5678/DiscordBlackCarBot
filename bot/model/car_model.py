@@ -1,10 +1,10 @@
 from typing import Dict
 
 class Passenger:
-    def __init__(self, data) -> None:
-        self.QueueNumber = data.get('QueueNumber', None)
-        self.PlayerName = data['PlayerName']
-        self.DiscordID = data['DiscordID']
+    def __init__(self, player_name, discord_id, queue_number=None) -> None:
+        self.QueueNumber = queue_number
+        self.PlayerName = player_name
+        self.DiscordID = discord_id
         
     def __repr__(self) -> str:
         result = "\n"
@@ -14,15 +14,15 @@ class Passenger:
         return result
 
 class Car:
-    def __init__(self, data) -> None:
+    def __init__(self, car_name, year, month, finished, planned_date, discord_id, fight_time) -> None:
         # attrs
-        self.CarName: str = data['CarName']
-        self.Year: int = data['Year']
-        self.Month: int = data['Month']
-        self.Finished: str = data['Finished']
-        self.PlannedDate: str = data['PlannedDate']
-        self.DiscordID: str = data['DiscordID']
-        self.FightTime: int = data['FightTime']
+        self.CarName: str = car_name
+        self.Year: int = year
+        self.Month: int = month
+        self.Finished: str = finished
+        self.PlannedDate: str = planned_date
+        self.DiscordID: str = discord_id
+        self.FightTime: int = fight_time
         # passengers
         self.__passengers: Dict[int, Passenger] = {}
     
@@ -83,5 +83,17 @@ class CarList:
     def _create_list(self, datas):
         for data in datas:
             if data['CarName'] not in self.__cars:
-                self.__cars[data['CarName']] = Car(data)
-            self.__cars[data['CarName']].join_passenger(Passenger(data))
+                self.__cars[data['CarName']] = Car(
+                    car_name = data['CarName'],
+                    month = data['Year'],
+                    Month = data['Month'],
+                    finished = data['Finished'],
+                    planned_date = data['PlannedDate'],
+                    discord_id = data['DiscordID'],
+                    fight_time = data['FightTime']
+                )
+            self.__cars[data['CarName']].join_passenger(Passenger(
+                queue_number = data['QueueNumber'],
+                player_name = data['PlayerName'],
+                discord_id = data['DiscordID']
+            ))

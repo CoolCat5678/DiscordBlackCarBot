@@ -10,7 +10,7 @@ CAR_NAME = TextInput(label="想上的車", placeholder="輸入想搭乘的車名
 DURATION_INPUT = TextInput(label="預計時間", placeholder="預計要打多久")
 DATE_INPUT = TextInput(label="發車日期", placeholder="什麼時候打 (年/月)")
 
-def get_formated_date(date: str) -> list[str]:
+def get_formated_date(date: str):
   year, month = date.strip().split("/")
   return [year, month]
 

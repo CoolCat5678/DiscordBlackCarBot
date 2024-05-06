@@ -34,6 +34,7 @@ async def reload(ctx: commands.Context, extension: str = 'gui'):
 async def load_extentions():
     for file in Path(__file__).parent.joinpath("cogs").rglob("*.py"):
         await bot.load_extension(f"cogs.{file.stem}")
+        pass
 
 async def call_awaitable(func: callable):
     try:

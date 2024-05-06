@@ -12,14 +12,14 @@ class Utils:
   async def fetch_user(ctx: commands.Context, user_id: int) -> discord.User:
     return await ctx.bot.fetch_user(user_id)
 
-  @staticmethod
-  async def get_user_id(ctx: commands.Context | None = None, interaction: Interaction | None = None) -> int:
-    if (ctx != None):
-      return ctx.author.id
-    return interaction.user.id
+  # @staticmethod
+  # async def get_user_id(ctx: commands.Context | None = None, interaction: Interaction | None = None) -> int:
+  #   if (ctx != None):
+  #     return ctx.author.id
+  #   return interaction.user.id
   
-  @staticmethod
-  async def get_user(ctx: commands.Context | None = None, interaction: Interaction | None = None) -> discord.User:
-    if (ctx != None):
-      return ctx.author
-    return interaction.user
+  # @staticmethod
+  # async def get_user(ctx: commands.Context | None = None, interaction: Interaction | None = None) -> discord.User:
+  #   if (ctx != None):
+  #     return ctx.author
+  #   return interaction.user
