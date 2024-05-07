@@ -85,8 +85,8 @@ class CarList:
             if data['CarName'] not in self.__cars:
                 self.__cars[data['CarName']] = Car(
                     car_name = data['CarName'],
-                    month = data['Year'],
-                    Month = data['Month'],
+                    year = data['Year'],
+                    month = data['Month'],
                     finished = data['Finished'],
                     planned_date = data['PlannedDate'],
                     discord_id = data['DiscordID'],

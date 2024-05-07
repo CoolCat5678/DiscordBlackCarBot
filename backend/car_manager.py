@@ -1,3 +1,6 @@
+# from pathlib import Path
+# import sys
+# sys.path.insert(0, Path(__file__).parents[1].as_posix())
 from bot.model.car_model import CarList, Car, Passenger
 from backend.Connecter import conn
 
