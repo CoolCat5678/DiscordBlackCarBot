@@ -1,10 +1,11 @@
 from enum import Enum
-from discord import Embed, ButtonStyle, Interaction
-from discord.ui import View, button
+from discord import Embed, ButtonStyle, Interaction, Color
+from discord.ui import View, button, Button
 from discord.ext import commands
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
 from model.bot_model import BotModel
+from bot.model.car_model import CarList, Car, Passenger
 
 from importlib import reload
 import views.bot_modal as modals
@@ -61,11 +62,23 @@ class Overview_view(Bot_views_base):
     embed.add_field(name="下次發車日期", value="`48763`", inline=False)
     super().add_new_line()
 
+  @button(label="測試", style=ButtonStyle.primary, custom_id="test")
+  async def form_add_p(self, interaction: Interaction, _):
+    try:
+      bot_model = BotModel()
+      embeds = creat_embeds(bot_model.search_car_month())
+      view = ViewClass(embeds=embeds)
+      await interaction.response.send_message(embed=embeds[view.current_page]['embed'], view=view)
+    except Exception as e:
+      print(e)
+      pass
+    
   @button(label="自己開車", style=ButtonStyle.primary, custom_id="create_car")
   async def create_car(self, interaction: Interaction, _):
     try:
       modal = modals.CreateCarModal()
-      await modal.show_modal(interaction)
+      car = Car(car_name="test_car", month=4, finished="Y", year=123, planned_date='2024-04-10', discord_id=123, fight_time=4)
+      await modal.show_modal(interaction, car)
     except Exception as e:
       print(e)
       pass
@@ -91,7 +104,7 @@ class Detail_list_view(Bot_views_base):
 
   def init_layout(self, embed: Embed):
     current_month = datetime.now().month
-    self.car_list = self.bot_model.search_car_month(current_month)
+    self.car_list = self.bot_model.search_car_month()
     self.render_detail_list(embed)
   
   def render_detail_list(self, embed: Embed):
@@ -112,7 +125,8 @@ class Detail_list_view(Bot_views_base):
   async def join_car(self, interaction: Interaction, _):
     try:
       modal = modals.JoinCarModal()
-      await modal.show_modal(interaction)
+      car = Car(car_name="test_car", month=4, finished="Y", year=123, planned_date='2024-04-10', discord_id=123, fight_time=4)
+      await modal.show_modal(interaction, car)
     except Exception as e:
       print(e)
       pass
@@ -138,3 +152,79 @@ async def switch_view(layout: Bot_Layouts, interaction: Interaction):
   except Exception as e:
     print(e)
     pass
+  
+#region test embedsview
+def creat_embeds(list):
+  embeds = []
+  for i in list:
+    embed = Embed(
+        title=i.CarName,
+        description=f"{i}",
+        color=Color.blue(),
+    )
+    car_dic = {
+      'embed' : embed,
+      'CarName' : i.CarName,
+      'Year' : i.Year,
+      'Month' : i.Month
+    }
+    embeds.append(car_dic)
+  return embeds
+
+class ViewClass(View):
+  def __init__(self, embeds, timeout: float or None = 180):
+      super().__init__(timeout=timeout)
+      self.embeds = embeds
+      self.current_page = 0
+
+  async def show_current_page(self, interaction: Interaction):
+    try:
+      await interaction.response.edit_message(embed=self.embeds[self.current_page]['embed'], view=self)
+    except Exception as e:
+      print(e)
+
+
+  @button(label="上一頁", style=ButtonStyle.gray)
+  async def go_previous(self, interaction: Interaction, button: Button):
+      if self.current_page > 0:
+          self.current_page -= 1
+          await self.show_current_page(interaction)
+      else:
+          await self.show_current_page(interaction)
+          
+  @button(label="測試登記上車", style=ButtonStyle.primary, custom_id="search_car")
+  async def join_car(self, interaction: Interaction, _):
+    try:
+      modal = modals.JoinCarModal()
+      car = Car(car_name="test_car", month=4, finished="Y", year=123, planned_date='2024-04-10', discord_id=123, fight_time=4)
+      await modal.show_modal(interaction, car)
+    except Exception as e:
+      print(e)
+      pass
+
+  @button(label="加入這台車", style=ButtonStyle.gray)
+  async def join(self, interaction: Interaction, button: Button):
+      try:
+        list = Embed(
+          title=self.embeds[self.current_page]['embed'].title,
+          description=f'''
+          取得key帶入表單
+          {self.embeds[self.current_page]['CarName']}
+          {self.embeds[self.current_page]['Year']}
+          {self.embeds[self.current_page]['Month']}
+          ''',
+          color=Color.blue()  # 設定 Embed 的顏色
+        )
+        await interaction.response.send_message(embed=list)
+      except Exception as e:
+        print(e)
+
+
+  @button(label="下一頁", style=ButtonStyle.gray)
+  async def go_next(self, interaction: Interaction, button: Button):
+      if self.current_page < len(self.embeds) - 1:
+          self.current_page += 1
+          await self.show_current_page(interaction)
+      else:
+          await self.show_current_page(interaction)
+# endregion

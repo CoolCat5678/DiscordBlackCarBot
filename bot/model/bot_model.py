@@ -1,37 +1,20 @@
-from .car_model import Car, CarList, Passenger
-from backend.car_manager import CarManager
+from bot.model.car_model import Car, CarList, Passenger
+from backend.car_manager import car_manager
 from typing import Generator
 
+
+
 class BotModel:
-  __instance = None
-
   def __init__(self):
-    self.manager = CarManager()
     pass
-
-  @staticmethod
-  def get_instance():
-    if BotModel.__instance == None:
-      BotModel.__instance = BotModel()
-    return BotModel.__instance
   
-   ## wait for manager ready
-  def search_car_month(self, month: int, load_limit: int = 3) -> Generator[list, None, None]:
-    car_list = self.manager.get_car_list(Month=4)
-    return self.car_lazy_loader(target=car_list, load_limit=load_limit)
+  def search_car_month(self):
+    car_list = car_manager.get_car_list(Month=4)
+    return car_list
   
-  def search_car_name(self, car_name: str) -> list:
-    car_list = self.manager.get_car_list(CarName=car_name)
+  def get_generator(self, car_name: str) -> list:
+    car_list = car_manager.get_car_list(CarName=car_name)
     return self.car_lazy_loader(target=car_list)
-  
-  # def join_car(self, car_name: str, month: int, player_name: str, discord_id: str) -> bool:
-  #   return True
-
-  # def search_car_name(self, car_name: str, month: int) -> list:
-  #   return conn.search(CarName=car_name, Month=month)
-  
-  # def create_car(self, car_name: str, month: int, day: int, player_name: str, discord_id = str, fight_time: int=60) -> bool:
-  #   return True
   
   def car_lazy_loader(self, target: CarList,load_limit: int = 3) -> Generator[list, None, None]:
     temp = []
@@ -44,5 +27,13 @@ class BotModel:
       yield temp
     except StopIteration:
       return None
-
-bot_model = BotModel.get_instance()
+    
+  def new_car(self, car_name, year, month, finished, planned_date, discord_id, fight_time, player_name):
+    new_car = Car(car_name=car_name, year=year, month=month, finished=finished, planned_date=planned_date, discord_id=discord_id, fight_time=fight_time)
+    new_passenger = Passenger(player_name=player_name, discord_id=discord_id)
+    new_car.join_passenger(new_passenger)
+    car_manager.update_car(new_car)
+  
+  def join_car(self, car_name, year, month, discord_id, player_name):
+    new_passenger = Passenger(player_name=player_name, discord_id=discord_id)
+  

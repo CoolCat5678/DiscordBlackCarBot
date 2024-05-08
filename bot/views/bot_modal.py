@@ -25,10 +25,11 @@ class JoinCarModal(Modal):
     self.add_item(self.date_input)
     self.add_item(self.name_input)
     self.add_item(self.level_input)
-    self.model: BotModel = BotModel.get_instance()
+    self.model: BotModel = BotModel()
 
-  async def show_modal(self, interaction: Interaction):
+  async def show_modal(self, interaction: Interaction, car):
     try:
+      self.car = car
       await interaction.response.send_modal(self)
     except Exception as e:
       print(e)
@@ -36,6 +37,7 @@ class JoinCarModal(Modal):
   async def on_submit(self, interaction: Interaction[ClientT]) -> None:
     await interaction.response.defer(ephemeral=True)
     try:
+      print(self.car)
       user = await Utils.get_user(interaction=interaction);
       # year, month = get_formated_date(self.date_input.value);
       # car_list = self.model.join_car(car_name=self.car_input.value, month=int(month), player_name=self.name_input.value, discord_id=user)

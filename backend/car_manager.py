@@ -13,7 +13,7 @@ class CarManager:
             CarManager.__instance = CarManager()
         return CarManager.__instance
 
-    def __init__(self) -> None: 
+    def __init__(self) -> None:
         pass
     
     def delete_car(self, car: Car):
@@ -63,10 +63,9 @@ class CarManager:
         
         return car_list
     
-def main():
-    cm = CarManager()
-    m4 = cm.get_car_list()['ACar']
-    cm.update_car(m4)
+car_manager = CarManager.get_instance()
+    
+
     
 if __name__=='__main__':
-    main()
+    pass
