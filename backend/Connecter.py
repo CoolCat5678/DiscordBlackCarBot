@@ -34,9 +34,11 @@ class Connecter:
             list
         """
         where_str = "1=1"
-        for key, value in kwargs.items():
-            where_str += f" AND M.{key}='{value}'"
-        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}")    
+        for key in kwargs.keys():
+            where_str += f" AND M.{key}=?"
+        value_input = tuple(kwargs.values())
+        
+        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}", value_input)    
         rows = self.__cursor.fetchall()
         return rows
 
@@ -47,9 +49,11 @@ class Connecter:
             list
         """
         where_str = "1=1"
-        for key, value in kwargs.items():
-            where_str += f" AND D.{key}='{value}'"
-        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}")    
+        for key in kwargs.keys():
+            where_str += f" AND D.{key}=?"
+        value_input = tuple(kwargs.values())
+            
+        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}", value_input)    
         rows = self.__cursor.fetchall()
         return rows
     
@@ -61,10 +65,12 @@ class Connecter:
         """
         try:
             columns = f"({' ,'.join(kwargs.keys())})"
-            values = str(tuple(kwargs.values()))
+            value_input = tuple(kwargs.values())
+            placeholders = ', '.join(['?' for _ in kwargs])
             
-            self.__cursor.execute(f"INSERT INTO BlackCar {columns} VALUES {values}")
+            self.__cursor.execute(f"INSERT INTO BlackCar {columns} VALUES ({placeholders})", value_input)
             self.__conn.commit()
+            print('asd')
             return True
         
         except Exception as e:
@@ -89,7 +95,7 @@ class Connecter:
             print(e)
             return False
 
-    def join_car(self, car_name: str, month: int, player_name: str , discord_id = str):  
+    def join_car(self, car_name: str, month: int, year : int, player_name: str , discord_id = str):  
         """
         This function calculates the area of a rectangle.
 
@@ -151,21 +157,12 @@ def formatted_date(month: int, day: int, year: int=None) -> str:
 
 
 # test -----------------------------------------------------------------
-
-
 def main():
-    # conn.insert_car(CarName="ACar", Year=2024, Month=4, PlannedDate='2024-04-29', DiscordID='20', FightTime=16)
-    # conn.insert_car(CarName='BCar', Year=2024, Month=4, PlannedDate='2024-04-29', DiscordID='20', FightTime=16)
-    # conn.insert_car(CarName='CCar', Year=2024, Month=4, PlannedDate='2024-04-29', DiscordID='20', FightTime=16)
-    # conn.insert_car(CarName='DCar', Year=2024, Month=4, PlannedDate='2024-04-29', DiscordID='20', FightTime=16)
-    # conn.insert_car(CarName='ECar', Year=2024, Month=4, PlannedDate='2024-04-29', DiscordID='20', FightTime=16)
-    # conn.insert_passenger(CarName='ACar', Year=2024, Month=4, QueueNumber=1, PlayerName='player1', DiscordID='9527')
-    # conn.insert_passenger(CarName='ACar', Year=2024, Month=4, QueueNumber=2, PlayerName='player2', DiscordID='9527')
-    # conn.insert_passenger(CarName='ACar', Year=2024, Month=4, QueueNumber=3, PlayerName='player3', DiscordID='9527')
-    # conn.insert_passenger(CarName='BCar', Year=2024, Month=4, QueueNumber=1, PlayerName='player1', DiscordID='9527')
-    # conn.insert_passenger(CarName='CCar', Year=2024, Month=4, QueueNumber=1, PlayerName='player1', DiscordID='9527')
-    # conn.insert_passenger(CarName='DCar', Year=2024, Month=4, QueueNumber=1, PlayerName='player1', DiscordID='9527')
-    # conn.insert_passenger(CarName='ECar', Year=2024, Month=4, QueueNumber=1, PlayerName='player1', DiscordID='9527')
+    print(conn.insert_car(CarName="ACar", Year=2024, Month=4, PlannedDate='2024-04-29', DiscordID='20', FightTime=16))
     pass
+
 if __name__ == '__main__':
     main()
+    
+    
+    
