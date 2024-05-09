@@ -26,8 +26,8 @@ class Connecter:
         self.__conn = sqlite3.connect(__dbPath)
         self.__conn.row_factory = dict_factory
         self.__cursor = self.__conn.cursor()
-                
-    def search_car(self, **kwargs) -> list:
+        
+    def search_car_passenger(self, **kwargs) -> list:
         """
         This function search car
         return:
@@ -39,6 +39,21 @@ class Connecter:
         value_input = tuple(kwargs.values())
         
         self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}", value_input)    
+        rows = self.__cursor.fetchall()
+        return rows
+    
+    def search_car(self, **kwargs) -> list:
+        """
+        This function search car
+        return:
+            list
+        """
+        where_str = "1=1"
+        for key in kwargs.keys():
+            where_str += f" AND M.{key}=?"
+        value_input = tuple(kwargs.values())
+        
+        self.__cursor.execute(f"SELECT M.* FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}", value_input)    
         rows = self.__cursor.fetchall()
         return rows
 
@@ -53,7 +68,24 @@ class Connecter:
             where_str += f" AND D.{key}=?"
         value_input = tuple(kwargs.values())
             
-        self.__cursor.execute(f"SELECT * FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}", value_input)    
+        self.__cursor.execute(f"SELECT D.* FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}", value_input)    
+        rows = self.__cursor.fetchall()
+        return rows
+                
+
+
+    def search_passenger(self, **kwargs) -> list:
+        """
+        This function search passenger
+        return:
+            list
+        """
+        where_str = "1=1"
+        for key in kwargs.keys():
+            where_str += f" AND D.{key}=?"
+        value_input = tuple(kwargs.values())
+            
+        self.__cursor.execute(f"SELECT D.* FROM BlackCar M LEFT JOIN BlackCarPassenger D ON M.CarName=D.CarName AND M.Month=D.Month WHERE {where_str}", value_input)    
         rows = self.__cursor.fetchall()
         return rows
     
@@ -158,11 +190,7 @@ def formatted_date(month: int, day: int, year: int=None) -> str:
 
 # test -----------------------------------------------------------------
 def main():
-    print(conn.insert_car(CarName="ACar", Year=2024, Month=4, PlannedDate='2024-04-29', DiscordID='20', FightTime=16))
     pass
 
 if __name__ == '__main__':
     main()
-    
-    
-    

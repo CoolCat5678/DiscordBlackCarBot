@@ -25,12 +25,7 @@ class Car:
         self.FightTime: int = fight_time
         # passengers
         self.__passengers: Dict[int, Passenger] = {}
-    
-    def join_passenger(self, passenger: Passenger):
-        if passenger.QueueNumber == None:
-            passenger.QueueNumber = max(self.__passengers.keys()) + 1
-        self.__passengers[passenger.QueueNumber] = passenger
-    
+
     def __repr__(self) -> str:
         result = "\n"
         result += f"CarName : {self.CarName}\n"
@@ -53,21 +48,32 @@ class Car:
     def __next__(self):
         return next(self._passenger_iter)
     
-    def __getitem__(self, key) -> Passenger:
+    def __getitem__(self, key: tuple) -> Passenger:
         return self.__passengers[key]
     
     def __len__(self):
         return len(self.__passengers)
-    
+        
+    def join_passenger(self, passenger: Passenger):
+        if passenger.QueueNumber == None:
+            if self._check_passenger(passenger):
+                passenger.QueueNumber = max(self.__passengers.keys()) + 1
+        self.__passengers[passenger.QueueNumber] = passenger
+        
+    def _check_passenger(self, new_passenger : Passenger):
+        for passenger in self:
+            if new_passenger.PlayerName == passenger.PlayerName:
+                return False
+        return True
 
 class CarList:
     def __init__(self) -> None:
-        self.__cars: Dict[str, Car] = {}
+        self.__cars: Dict[tuple, Car] = {}
             
     def __repr__(self) -> str:
         result = "\n"
         for key, value in self.__cars.items():
-            result += f"{key}:{len(value)}人 預計:{value.PlannedDate}\n"
+            result += f"{key} : {len(value)}人 預計:{value.PlannedDate}\n"
         return result
     
     def __iter__(self):
@@ -80,10 +86,11 @@ class CarList:
     def __getitem__(self, key) -> Car:
         return self.__cars[key]
     
-    def _create_list(self, datas):
+    def create_list(self, datas):
         for data in datas:
-            if data['CarName'] not in self.__cars:
-                self.__cars[data['CarName']] = Car(
+            key = (data['Year'], data['Month'], data['CarName'])
+            if key not in self.__cars:
+                self.__cars[key] = Car(
                     car_name = data['CarName'],
                     year = data['Year'],
                     month = data['Month'],
@@ -92,8 +99,9 @@ class CarList:
                     discord_id = data['DiscordID'],
                     fight_time = data['FightTime']
                 )
-            self.__cars[data['CarName']].join_passenger(Passenger(
+            self.__cars[key].join_passenger(Passenger(
                 queue_number = data['QueueNumber'],
                 player_name = data['PlayerName'],
                 discord_id = data['DiscordID']
             ))
+            

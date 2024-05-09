@@ -1,6 +1,6 @@
-# from pathlib import Path
-# import sys
-# sys.path.insert(0, Path(__file__).parents[1].as_posix())
+from pathlib import Path
+import sys
+sys.path.insert(0, Path(__file__).parents[1].as_posix())
 from bot.model.car_model import CarList, Car, Passenger
 from backend.Connecter import conn
 
@@ -56,16 +56,16 @@ class CarManager:
             paras['DiscordID'] = DiscordID
         if FightTime is not None:
             paras['FightTime'] = FightTime
-        data = conn.search_car(**paras)
+        data = conn.search_car_passenger(**paras)
         
         car_list = CarList()
-        car_list._create_list(data)
+        car_list.create_list(data)
         
         return car_list
     
 car_manager = CarManager.get_instance()
-    
 
     
 if __name__=='__main__':
-    pass
+    x = car_manager.get_car_list()
+    print(x[(2024, 4, 'ACar')])

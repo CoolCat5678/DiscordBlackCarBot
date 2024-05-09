@@ -2,8 +2,6 @@ from bot.model.car_model import Car, CarList, Passenger
 from backend.car_manager import car_manager
 from typing import Generator
 
-
-
 class BotModel:
   def __init__(self):
     pass
@@ -32,8 +30,9 @@ class BotModel:
     new_car = Car(car_name=car_name, year=year, month=month, finished=finished, planned_date=planned_date, discord_id=discord_id, fight_time=fight_time)
     new_passenger = Passenger(player_name=player_name, discord_id=discord_id)
     new_car.join_passenger(new_passenger)
-    car_manager.update_car(new_car)
+    car_manager.update_car(car=new_car)
   
-  def join_car(self, car_name, year, month, discord_id, player_name):
+  def join_car(self, car : Car, discord_id, player_name):
     new_passenger = Passenger(player_name=player_name, discord_id=discord_id)
-  
+    car.join_passenger(new_passenger)
+    car_manager.update_car(car=car)
